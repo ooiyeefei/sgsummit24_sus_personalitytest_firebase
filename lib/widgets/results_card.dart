@@ -3,6 +3,12 @@ import 'package:sgsummit24_sus_personalitytest/widgets/dotted_lines.dart';
 import 'package:sgsummit24_sus_personalitytest/models/sus_heroes_model.dart';
 import 'package:flutter/material.dart';
 import 'package:sgsummit24_sus_personalitytest/widgets/hero_detail.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+double adaptFontSize(BuildContext context, double baseFontSize) {
+  // You can adjust the multiplier or logic here based on your preferences
+  return baseFontSize * MediaQuery.of(context).size.width * 0.003;
+}
 
 class ResultsCard extends StatelessWidget {
   ResultsCard({
@@ -12,6 +18,17 @@ class ResultsCard extends StatelessWidget {
   final String profile;
   final heroesData = susHeroesList;
   late SusHeroes hero;
+  late String email = 'xxx@email.com';
+  late String subject = 'Interested';
+  late String body = 'I would like to know more about sustainable IT';
+
+  Future<void> _launchEmail() async {
+    final url = Uri.parse('mailto:$email?subject=$subject&body=$body');
+    if (!await canLaunchUrl(url)) {
+      throw 'Could not launch $url';
+    }
+    await launchUrl(url);
+  }
 
    heroProfile(String profile) {
       switch (profile) {
@@ -37,9 +54,11 @@ class ResultsCard extends StatelessWidget {
 
     heroProfile(profile);
 
-    return SizedBox(
-      width: MediaQuery.of(context).size.width * 0.888,
-      height: MediaQuery.of(context).size.height * 0.8,
+    return Container(
+        margin: EdgeInsets.only(
+        left: MediaQuery.of(context).size.width * 0.1, // Adjust factor for left margin
+        right: MediaQuery.of(context).size.width * 0.1, // Adjust factor for right margin
+      ),
       child: Stack(
         children: [
           Card(
@@ -49,43 +68,46 @@ class ResultsCard extends StatelessWidget {
             ),
             elevation: 5,
             child: Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(20.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 10),
-                  Text(
-                    "Congratulations!",
-                    style: GoogleFonts.robotoMono(
-                                        textStyle: TextStyle(
-                                          color: bgColor,
-                                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                                          fontWeight: FontWeight.bold,
-                                          ),
-                                ),
-                  ),
-                  const SizedBox(height: 15),
-                  Text(
-                    "Your Sustainability Hero is:",
-                    style: GoogleFonts.robotoMono(
-                                        textStyle: TextStyle(
-                                          color: bgColor,
-                                          fontSize: MediaQuery.of(context).size.width * 0.03,
-                                          fontWeight: FontWeight.bold,
-                                          ),
-                                ),
-                  ),
-                  const SizedBox(height: 15),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Congratulations!",
+                      style: GoogleFonts.robotoMono(
+                                          textStyle: TextStyle(
+                                            color: bgColor,
+                                            fontSize: MediaQuery.of(context).size.width * 0.035,
+                                            fontWeight: FontWeight.bold,
+                                            ),
+                                  ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      "Your Sustainability Hero is:",
+                      style: GoogleFonts.robotoMono(
+                                          textStyle: TextStyle(
+                                            color: bgColor,
+                                            fontSize: MediaQuery.of(context).size.width * 0.035,
+                                            fontWeight: FontWeight.bold,
+                                            ),
+                                  ),
+                    ),
+                    const SizedBox(height: 30),
+                  
                   CustomPaint(
                     painter: DrawDottedhorizontalline(),
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Center(
+                  // Expanded(
+                  //   flex: 2,
+                  //   child: 
+                    Center(
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 15),
+                        padding: const EdgeInsets.only(top: 20),
                         child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
                                     hero.heroName,
@@ -97,6 +119,17 @@ class ResultsCard extends StatelessWidget {
                                           ),
                                 ),
                                   ),
+                                  const SizedBox(height: 15),
+                                  Text(
+                                    "Click on image to find out more!",
+                                    style: GoogleFonts.acme(
+                                        textStyle: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                                          fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
                                   const SizedBox(height: 15),
                                   GestureDetector( // Wrap with GestureDetector
                                     onTap: () {
@@ -120,20 +153,42 @@ class ResultsCard extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 15),
                                   Text(
-                                    "Click on image to find out more!",
-                                    style: GoogleFonts.acme(
+                                    "Get in touch with us to assess your IT carbon footprint and\nlearn more about AWS silicon like Graviton, Inferential and Trainium!",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.robotoSlab(
                                         textStyle: TextStyle(
-                                          color: Colors.blueAccent,
-                                          fontSize: MediaQuery.of(context).size.width * 0.03,
+                                          color: bgColor,
+                                          fontSize: MediaQuery.of(context).size.width * 0.02,
                                           fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ),
+                                  const SizedBox(height: 15),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(cardBgColor),
+                                      padding: MaterialStateProperty.all(EdgeInsets.all(20.0)),
+                                      elevation: MaterialStateProperty.all(4),
+                                    ),
+                                    onPressed: _launchEmail,
+                                    child: Text(
+                                      "Reach out",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.robotoMono(
+                                              textStyle: TextStyle(
+                                                color: bgColor,
+                                                fontSize: MediaQuery.of(context).size.width * 0.02,
+                                                fontWeight: FontWeight.bold,
+                                                ),
+                                            ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
                                     ],
                                   )
                       ),
                     ),
-                  )
+                  // )
                 ],
               ),
             ),

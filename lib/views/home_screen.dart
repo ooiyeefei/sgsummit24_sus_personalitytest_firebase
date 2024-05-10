@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sgsummit24_sus_personalitytest/models/sus_heroes_model.dart';
 import 'package:flutter/material.dart';
@@ -194,6 +193,23 @@ class HomePage extends StatelessWidget {
                     ),
                   );
                 },
+              ),
+              Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  textAlign: TextAlign.center,
+                    'powered by Supabase, an AWS partner :)',
+                    style: GoogleFonts.robotoMono(
+                                    textStyle: TextStyle(
+                                      color: cardBgColor,
+                                      fontSize: MediaQuery.of(context).size.width * 0.015,
+                                      fontWeight: FontWeight.bold,
+                                      ),
+                                  ),
+                    ),
+                ),
+              const SizedBox(
+                height: 15,
               ),
             ],
           ),

@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sgsummit24_sus_personalitytest/models/quiz_questions_model.dart';
 import 'package:sgsummit24_sus_personalitytest/views/results_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:uuid/uuid.dart';
+import 'package:intl/intl.dart';
 
 class QuizScreen extends StatefulWidget {
   @override
@@ -15,6 +18,44 @@ class _QuizScreenState extends State<QuizScreen> {
   String profile = '';
   List<QuizQuestion> _questions = questionsList;
   bool _hasSelectedOption = false; 
+  // late Future<void> _initializeSupabaseFuture;
+
+  // Future main() async {
+  //   await dotenv.load(./dotenv);
+  // }
+  // late Future<void> _initializeSupabaseFuture = Supabase.initialize(
+  //   url: dotenv.env['SUPABASE_URL']!,
+  //   anonKey: dotenv.env['SUPABASE_ANON']!,
+  // );
+  
+  Future<void> _postDataToSupabase() async {
+  // Replace with your actual Supabase URL and anon key
+  // final supabase = Supabase.instance.client;
+
+  const tableName = 'sgsummit-suspersona'; // Replace with your actual table name
+  final uuid = Uuid().v4(); // Generate a UUID
+
+  // Extract the first 8 characters (assuming 64-bit BigInt)
+  final subString = uuid.substring(0, 8);
+
+  // Parse the substring as an integer (potential loss of information)
+  final bigIntValue = BigInt.parse(subString, radix: 16);
+
+  // Assuming you have variables like _score and profile to store data
+  final data = {
+    'id': bigIntValue.toInt(),
+    // 'created_at': DateTime.now().toIso8601String(),
+    'score': _score,
+    'profile': profile,
+    // Add other data fields as needed
+  };
+
+  try {
+    await Supabase.instance.client.from(tableName).insert(data);
+  } catch (error) {
+    print('Error during Supabase operation: $error');
+  }
+}
 
   void _handleOptionSelection(int optionIndex) {
     setState(() {
@@ -42,10 +83,13 @@ class _QuizScreenState extends State<QuizScreen> {
     if (_isLastQuestion()) {
       _evaluateResult();
        Text('Your Profile: $profile');
+      // Post data to Supabase after potentially showing score
+    _postDataToSupabase().then((_) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => ResultsScreen(score: _score, profile: profile)),
       ).then((_) => _resetState());
+    });
       return;
     }
     setState(() {
@@ -66,7 +110,7 @@ class _QuizScreenState extends State<QuizScreen> {
       profile = 'Energy Expert';
     } else if (_score >= 26 && _score <= 33) {
       profile = 'Green Guide';
-    } else if (_score >= 34 && _score <= 40) {
+    } else if (_score >= 34) {
       profile = 'Fume Fighter';
     }
   }
@@ -90,6 +134,19 @@ class _QuizScreenState extends State<QuizScreen> {
 
     return Scaffold(
       backgroundColor: bgColor,
+      // bottomSheet: Padding(
+      // padding: EdgeInsets.all(10.0),
+      // child: Text(
+      //     'powered by Supabase, an AWS partner :)',
+      //     style: GoogleFonts.robotoMono(
+      //                     textStyle: TextStyle(
+      //                       color: cardBgColor,
+      //                       fontSize: MediaQuery.of(context).size.width * 0.015,
+      //                       fontWeight: FontWeight.bold,
+      //                       ),
+      //                   ),
+      //     ),
+      // ),
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: Text(
@@ -97,7 +154,7 @@ class _QuizScreenState extends State<QuizScreen> {
           style: GoogleFonts.robotoSlab(
                           textStyle: TextStyle(
                             color: Colors.white,
-                            fontSize: MediaQuery.of(context).size.width * 0.045,
+                            fontSize: MediaQuery.of(context).size.width * 0.035,
                             fontWeight: FontWeight.bold,
                             ),
                         ),
@@ -120,7 +177,7 @@ class _QuizScreenState extends State<QuizScreen> {
                   style: GoogleFonts.robotoMono(
                           textStyle: TextStyle(
                             color: cardBgColor,
-                            fontSize: 16,
+                            fontSize: MediaQuery.of(context).size.width * 0.03,
                             fontWeight: FontWeight.bold,
                             ),
                         ),
@@ -169,7 +226,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             onPressed: (selectedIndexes) => _handleOptionSelection(index),
                             children: [
                               Container(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: EdgeInsets.all(12.0),
                                   child: Text(
                                     '${_getOptionLabel(index)}. ${option.text!}',
                                     textAlign: TextAlign.left,

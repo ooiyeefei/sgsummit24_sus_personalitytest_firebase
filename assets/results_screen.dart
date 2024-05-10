@@ -1,4 +1,6 @@
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sgsummit24_sus_personalitytest/views/home_screen.dart';
+import 'package:sgsummit24_sus_personalitytest/views/personality_test_screen.dart';
 import 'package:sgsummit24_sus_personalitytest/widgets/results_card.dart';
 import 'package:flutter/material.dart';
 
@@ -8,13 +10,14 @@ double adaptFontSize(BuildContext context, double baseFontSize) {
 }
 
 class ResultsScreen extends StatelessWidget {
-  ResultsScreen(
+  const ResultsScreen(
       {super.key,
       required this.score,
       required this.profile
       });
   final int score;
   final String profile;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -29,19 +32,6 @@ class ResultsScreen extends StatelessWidget {
         return Future.value(false);
       },
       child: Scaffold(
-        // bottomSheet: Padding(
-        // padding: EdgeInsets.all(10.0),
-        // child: Text(
-        //     'powered by Supabase, an AWS partner :)',
-        //     style: GoogleFonts.robotoMono(
-        //                     textStyle: TextStyle(
-        //                       color: cardBgColor,
-        //                       fontSize: MediaQuery.of(context).size.width * 0.015,
-        //                       fontWeight: FontWeight.bold,
-        //                       ),
-        //                   ),
-        //     ),
-        // ),
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: bgColor,
@@ -60,8 +50,9 @@ class ResultsScreen extends StatelessWidget {
           ],
         ),
         backgroundColor: bgColor,
-        body: SafeArea(
+        body: Center(
           child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
             child: Center(
             child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +82,7 @@ class ResultsScreen extends StatelessWidget {
                   profile: profile,
                   ),
               const SizedBox(
-                height: 30,
+                height: 15,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -99,7 +90,9 @@ class ResultsScreen extends StatelessWidget {
                 ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(cardBgColor),
-                  padding: MaterialStateProperty.all(EdgeInsets.all(20.0)),
+                  fixedSize: MaterialStateProperty.all(
+                    Size(MediaQuery.sizeOf(context).width * 0.30, 40),
+                  ),
                   elevation: MaterialStateProperty.all(4),
                 ),
                 onPressed: () {
@@ -107,10 +100,12 @@ class ResultsScreen extends StatelessWidget {
                 },
                 child: Text(
                   "Re-test",
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.robotoMono(
                           textStyle: TextStyle(
                             color: bgColor,
-                            fontSize: MediaQuery.of(context).size.width * 0.02,
+                            // fontSize: MediaQuery.of(context).size.width * 0.025,
+                            fontSize: adaptFontSize(context, 0.025),
                             fontWeight: FontWeight.bold,
                             ),
                         ),
@@ -122,7 +117,9 @@ class ResultsScreen extends StatelessWidget {
               ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(cardBgColor),
-                  padding: MaterialStateProperty.all(EdgeInsets.all(20.0)),
+                  fixedSize: MaterialStateProperty.all(
+                    Size(MediaQuery.sizeOf(context).width * 0.3, 40),
+                  ),
                   elevation: MaterialStateProperty.all(4),
                 ),
                 onPressed: () {
@@ -133,30 +130,13 @@ class ResultsScreen extends StatelessWidget {
                   style: GoogleFonts.robotoMono(
                           textStyle: TextStyle(
                             color: bgColor,
-                            fontSize: MediaQuery.of(context).size.width * 0.02,
+                            fontSize: MediaQuery.of(context).size.width * 0.025,
                             fontWeight: FontWeight.bold,
                             ),
                         ),
                 ),
               ),
               ],
-              ),
-              Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  textAlign: TextAlign.center,
-                    'powered by Supabase, an AWS partner :)',
-                    style: GoogleFonts.robotoMono(
-                                    textStyle: TextStyle(
-                                      color: cardBgColor,
-                                      fontSize: MediaQuery.of(context).size.width * 0.015,
-                                      fontWeight: FontWeight.bold,
-                                      ),
-                                  ),
-                    ),
-                ),
-              const SizedBox(
-                height: 10,
               ),
             ],
           ),

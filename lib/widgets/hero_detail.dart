@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sgsummit24_sus_personalitytest/views/personality_test_screen.dart';
-// import 'package:sgsummit24_sus_personalitytest/views/personality_test_screen.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HeroDetailPage extends StatelessWidget {
   final String heroName;
@@ -13,8 +10,19 @@ class HeroDetailPage extends StatelessWidget {
   final Color topicColor;
   final String heroTagline;
   final String heroDescription;
+  late String email = 'xxx@email.com';
+  late String subject = 'Interested';
+  late String body = 'I would like to know more about sustainable IT';
 
-  const HeroDetailPage({
+  Future<void> _launchEmail() async {
+    final url = Uri.parse('mailto:$email?subject=$subject&body=$body');
+    if (!await canLaunchUrl(url)) {
+      throw 'Could not launch $url';
+    }
+    await launchUrl(url);
+  }
+
+  HeroDetailPage({
     super.key,
     required this.heroName,
     required this.heroImage,
@@ -30,10 +38,12 @@ class HeroDetailPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: bgColor,
       body: SafeArea(
-        child: Center(
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(16),
+        child: SingleChildScrollView(
+          child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            // physics: const AlwaysScrollableScrollPhysics(),
+            // padding: const EdgeInsets.all(16),
             children: [
               const SizedBox(
                 height: 10,
@@ -59,13 +69,21 @@ class HeroDetailPage extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: EdgeInsets.all(10),
-                width: MediaQuery.of(context).size.width * 0.92,
-                height: MediaQuery.of(context).size.height * 0.85,
+                alignment: Alignment.center,
+                margin: EdgeInsets.all(20),
+                constraints: BoxConstraints( // Set constraints for max width in landscape
+                    maxWidth: MediaQuery.of(context).size.width * 0.92, // Adjust max width as needed
+                  ),
+                // width: MediaQuery.of(context).size.width * 0.92,
+                // height: MediaQuery.of(context).size.height * 0.8,
                 child: Card.filled(
+                  margin: EdgeInsets.all(25),
                   color: cardBgColor,
-                  child: Center(
+                  child: Padding(
+                          padding: EdgeInsets.all(30),
+                          child: Center(
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const SizedBox(
                               height: 10,
@@ -98,7 +116,7 @@ class HeroDetailPage extends StatelessWidget {
                           height: 15,
                         ),
                             Container(
-                              margin: EdgeInsets.fromLTRB(20,0,20,0),
+                              margin: EdgeInsets.fromLTRB(18,0,18,0),
                               child: Column(
                                 children: [
                                   Text(
@@ -133,28 +151,56 @@ class HeroDetailPage extends StatelessWidget {
                                     
                                     ),
                                   ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "Get in touch with us to assess your IT carbon footprint and\nlearn more about AWS silicon like Graviton, Inferential and Trainium!",
+                                    textAlign: TextAlign.center,
+                                    style: GoogleFonts.robotoSlab(
+                                        textStyle: TextStyle(
+                                          color: Colors.blueAccent,
+                                          fontSize: MediaQuery.of(context).size.width * 0.02,
+                                          fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                  const SizedBox(height: 20),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(cardBgColor),
+                                      padding: MaterialStateProperty.all(EdgeInsets.all(20.0)),
+                                      elevation: MaterialStateProperty.all(4),
+                                    ),
+                                    onPressed: _launchEmail,
+                                    child: Text(
+                                      "Reach out",
+                                      textAlign: TextAlign.center,
+                                      style: GoogleFonts.robotoMono(
+                                              textStyle: TextStyle(
+                                                color: bgColor,
+                                                fontSize: MediaQuery.of(context).size.width * 0.02,
+                                                fontWeight: FontWeight.bold,
+                                                ),
+                                            ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
                         ],
                         ),
                       ),
+                  ),
                 ),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Column(
-                children: [
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(cardBgColor),
-                      fixedSize: MaterialStateProperty.all(
-                        Size(MediaQuery.sizeOf(context).width * 0.3, 40),
-                      ),
-                      elevation: MaterialStateProperty.all(4),
-                    ),
-                    onPressed: () {
+              ), 
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(cardBgColor),
+                  padding: MaterialStateProperty.all(EdgeInsets.all(20.0)),
+                  elevation: MaterialStateProperty.all(4),
+                ),
+                onPressed: () {
                       print("Start Test");
                       Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
@@ -163,21 +209,68 @@ class HeroDetailPage extends StatelessWidget {
                         ),
                       );
                     },
-                    child: Text(
-                      "Start Test",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.robotoMono(
-                                        textStyle: TextStyle(
-                                          fontSize: MediaQuery.of(context).size.width * 0.02,
-                                          fontWeight: FontWeight.bold,
-                                          ),
+                child: Text(
+                  "Start Test",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.robotoMono(
+                          textStyle: TextStyle(
+                            color: bgColor,
+                            fontSize: MediaQuery.of(context).size.width * 0.02,
+                            fontWeight: FontWeight.bold,
+                            ),
+                        ),
+                ),
+              ),
+              // Column(
+              //   children: [
+              //     ElevatedButton(
+              //       style: ButtonStyle(
+              //         backgroundColor: MaterialStateProperty.all(cardBgColor),
+              //         elevation: MaterialStateProperty.all(4),
+              //       ),
+              //       onPressed: () {
+              //         print("Start Test");
+              //         Navigator.of(context).pushReplacement(
+              //           MaterialPageRoute(
+              //             builder: (context) => QuizScreen(
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //       child: Text(
+              //         "Start Test",
+              //         textAlign: TextAlign.center,
+              //         style: GoogleFonts.robotoMono(
+              //           color: bgColor,
+              //             textStyle: TextStyle(
+              //               fontSize: MediaQuery.of(context).size.width * 0.02,
+              //               fontWeight: FontWeight.bold,
+              //               ),
+              //           ),
+              //       ),
+              //     )
+              //   ],
+              // ),
+              Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Text(
+                  textAlign: TextAlign.center,
+                    'powered by Supabase, an AWS partner :)',
+                    style: GoogleFonts.robotoMono(
+                                    textStyle: TextStyle(
+                                      color: cardBgColor,
+                                      fontSize: MediaQuery.of(context).size.width * 0.015,
+                                      fontWeight: FontWeight.bold,
                                       ),
+                                  ),
                     ),
-                  )
-                ],
+                ),
+              const SizedBox(
+                height: 10,
               ),
             ],
           ),
+        ),
         ),
       ),
     );
